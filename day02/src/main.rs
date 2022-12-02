@@ -25,7 +25,7 @@ enum Shape {
 }
 
 impl Shape {
-  fn from(i: i32) -> Shape {
+  fn from(i: u8) -> Shape {
     match i {
       0 => Shape::Rock,
       1 => Shape::Paper,
@@ -41,14 +41,14 @@ struct Round {
 }
 
 fn calculate_score(round: Round) -> i32 {
-  let shape_score = round.i_play as i32 + 1;
-  let win_score = 3 * ((4 + round.i_play as i32 - round.opponent_plays as i32) % 3);
-  shape_score + win_score
+  let shape_score = round.i_play as u8 + 1;
+  let win_score = 3 * ((4 + round.i_play as u8 - round.opponent_plays as u8) % 3);
+  (shape_score + win_score).into()
 }
 
 fn parse_round_p1(s: &str) -> Round {
-  let opponent_plays = Shape::from((s.bytes().nth(0).unwrap() - b'A').into());
-  let i_play = Shape::from((s.bytes().nth(2).unwrap() - b'X').into());
+  let opponent_plays = Shape::from(s.bytes().nth(0).unwrap() - b'A');
+  let i_play = Shape::from(s.bytes().nth(2).unwrap() - b'X');
   return Round {
     i_play,
     opponent_plays,
@@ -56,9 +56,9 @@ fn parse_round_p1(s: &str) -> Round {
 }
 
 fn parse_round_p2(s: &str) -> Round {
-  let opponent_plays = Shape::from((s.bytes().nth(0).unwrap() - b'A').into());
-  let target_result: i32 = (s.bytes().nth(2).unwrap() - b'X').into(); // 0=loss, 1=draw, 2=win
-  let i_play = Shape::from((2 + opponent_plays as i32 + target_result) % 3);
+  let opponent_plays = Shape::from(s.bytes().nth(0).unwrap() - b'A');
+  let target_result: u8 = s.bytes().nth(2).unwrap() - b'X'; // 0=loss, 1=draw, 2=win
+  let i_play = Shape::from((2 + opponent_plays as u8 + target_result) % 3);
   return Round {
     i_play,
     opponent_plays,
